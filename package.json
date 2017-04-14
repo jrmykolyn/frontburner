@@ -1,0 +1,11 @@
+{
+  "name": "frontburner",
+  "version": "0.0.0",
+  "description": "Frontburner reads through project files and outputs lists/logs of 'FIXME', 'TODO', and similar notes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesse R Mykolyn",
+  "license": "ISC"
+}
