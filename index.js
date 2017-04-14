@@ -121,19 +121,21 @@ function getLogName( logFile ) {
  * @return {Null|Array}
  */
 function getKeywordsFromOptions( options ) {
-	if ( !options || !options.length ) {
+	// Validate/re-assign args.
+	options = ( Array.isArray( options ) && options.length ) ? options : null;
+
+	// Log errors if args are missing/invalid.
+	if ( !options ) { printArgError( 'options' ); return null; }
+
+	var keywordsString = extractOption( '--keywords', options );
+	var keywordsArr = null;
+
+	try {
+		keywordsArr = keywordsString.split( '=' )[ 1 ].split( ',' );
+
+		return ( Array.isArray( keywordsArr ) && keywordsArr.length ) ? keywordsArr : null;
+	} catch ( err ) {
 		return null;
-	} else {
-		var keywordsString = extractOption( '--keywords', options );
-		var keywordsArr = null;
-
-		try {
-			keywordsArr = keywordsString.split( '=' )[ 1 ].split( ',' );
-
-			return ( Array.isArray( keywordsArr ) && keywordsArr.length ) ? keywordsArr : null;
-		} catch ( err ) {
-			return null;
-		}
 	}
 }
 
