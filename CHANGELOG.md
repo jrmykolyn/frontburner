@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Moved 'hardcoded' keywords into project configuration file.
+- Added support for 'keywords' option (eg. --keywords=FIXME,TODO). Keywords specified in this way will override the program defaults.
 
 ## [0.0.2] - 2017-04-14
 ### Added
