@@ -124,11 +124,37 @@ function getKeywordsFromOptions( options ) {
 	if ( !options || !options.length ) {
 		return null;
 	} else {
-		var keywordsString = options.filter( ( option ) => { return option.includes( '--keywords' ); } )[ 0 ];
-		var keywordsArr = keywordsString.split( '=' )[ 1 ].split( ',' );
+		var keywordsString = extractOption( '--keywords', options );
+		var keywordsArr = null;
 
-		return ( Array.isArray( keywordsArr ) && keywordsArr.length ) ? keywordsArr : null;
+		try {
+			keywordsArr = keywordsString.split( '=' )[ 1 ].split( ',' );
+
+			return ( Array.isArray( keywordsArr ) && keywordsArr.length ) ? keywordsArr : null;
+		} catch ( err ) {
+			return null;
+		}
 	}
+}
+
+/**
+ * Given a specific option, function returns it (including the key, value, and delimiter) if present within the `options` array.
+ *
+ * @param {String} `option`
+ * @param {Array} `options`
+ * @return {Null|String}
+ */
+function extractOption( option, options ) {
+	// Validate/re-assign args.
+	option = ( option && typeof option === 'string' ) ? option : null;
+	options = ( Array.isArray( options ) && options.length ) ? options : null;
+
+	// Log errors if args are missing/invalid.
+	if ( !option ) { printArgError( 'option' ); return null; }
+	if ( !options ) { printArgError( 'options' ); return null; }
+
+	// Return first matched option or `null`.
+	return options.filter( ( opt ) => { return opt.includes( option ); } )[ 0 ] || null;
 }
 
 /* -------------------------------------------------- */
@@ -138,7 +164,6 @@ if ( !ARGS || !ARGS.length ) {
 	/// TODO[@jrmykolyn] - Display warning/error/menu.
 } else {
 	fileName = ARGS[ 0 ];
-
 
 	switch ( fileName ) {
 		case '*':
@@ -160,15 +185,20 @@ if ( !ARGS || !ARGS.length ) {
 					var keywords = getKeywordsFromOptions( OPTIONS ) || config.keywords
 					var noteObj = getInlineNotes( decoder.write( data ), keywords );
 					var outputText = formatNoteObj( noteObj );
+					var displayOnly = !!extractOption( '--display', OPTIONS );
 
-					fs.writeFile( process.cwd() + '/' + getLogName( logFile ), outputText, ( err, data ) => {
-						if ( err ) {
-							console.error( 'Whoops! Something went wrong!' );
-							return;
-						}
+					if ( displayOnly ) {
+						console.log( outputText );
+					} else {
+						fs.writeFile( process.cwd() + '/' + getLogName( logFile ), outputText, ( err, data ) => {
+							if ( err ) {
+								console.error( 'Whoops! Something went wrong!' );
+								return;
+							}
 
-						console.log( 'Success!' ); /// TODO[@jrmykolyn] - Update 'success' message to include useful info.
-					} );
+							console.log( 'Success!' ); /// TODO[@jrmykolyn] - Update 'success' message to include useful info.
+						} );
+					}
 				} else {
 					/// TODO[@jrmykolyn] - Handle case where data *IS NOT* a Buffer instance.
 				}
