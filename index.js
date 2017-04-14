@@ -46,6 +46,33 @@ function getInlineNotes( input ) {
 	return output;
 }
 
+
+/**
+ * Given a `noteObj`, function generates a human-readable version of the included data.
+ *
+ * @param {Object} `noteObj` - An object of 'inline note' data.
+ * @return {String}
+ */
+function formatNoteObj( noteObj ) {
+	noteObj = ( noteObj && typeof noteObj === 'object' ) ? noteObj : null;
+
+	var output = '';
+
+	if ( !noteObj ) { printArgError( 'noteObj' ); }
+
+	for ( let key in noteObj ) {
+		if ( noteObj[ key ] && Array.isArray( noteObj[ key ] ) ) {
+			output += `${key}\n`;
+			output += '--------------------------------------------------';
+			output += '\n';
+			output += noteObj[ key ].reduce( ( a1, a2 ) => { return `${a1}\n${a2}\n`; } );
+			output += '\n\n';
+		}
+	}
+
+	return output;
+}
+
 /**
  * Given an array of argument names, function prints out an approrpriate error message.
  *
@@ -106,8 +133,9 @@ if ( !ARGS || !ARGS.length ) {
 
 				if ( data instanceof Buffer ) {
 					var noteObj = getInlineNotes( decoder.write( data ), 'FIXME' );
+					var outputText = formatNoteObj( noteObj );
 
-					fs.writeFile( process.cwd() + '/' + getLogName( logFile ), JSON.stringify( noteObj, null, '\t' ), ( err, data ) => {
+					fs.writeFile( process.cwd() + '/' + getLogName( logFile ), outputText, ( err, data ) => {
 						if ( err ) {
 							console.error( 'Whoops! Something went wrong!' );
 							return;
