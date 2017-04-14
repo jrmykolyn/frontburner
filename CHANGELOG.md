@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- Added project configuration file ('config/frontburner.config.js').
+
+### Changed
+- Moved 'hardcoded' keywords into project configuration file.
+
 ## [0.0.2] - 2017-04-14
 ### Added
 - 'index.js': entry point into Frontburner; contains main/primary program logic.
