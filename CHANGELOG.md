@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- 'index.js': entry point into Frontburner; contains main/primary program logic.
+- 'temp/': contains temporary files that are required for initial development and testing.
+
 ## [0.0.1] - 2017-04-14
 ### Added
 - Basic project configuration files (eg. `.git`, `.editorconfig`, `package.json`, etc.)
