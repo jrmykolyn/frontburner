@@ -14,6 +14,72 @@ const ARGS = process.argv.slice( 2 ) || [];
 var fileName = null;
 var filePath = null;
 
+var logFile = {
+	base: 'frontburner',
+	extension: '.log'
+};
+
+/* -------------------------------------------------- */
+/* DECLARE FUNCTIONS */
+/* -------------------------------------------------- */
+/**
+ * Given an `input` string, function returns an object containing all occurrences of the specified `keywords`.
+ *
+ * @param {String} `input` - The text content to check.
+ * @return {Object}
+ */
+function getInlineNotes( input ) {
+	input = input || null;
+
+	if ( !input ) { printArgError( 'input' ); return; }
+
+	var keywords = [ 'FIXME', 'TEMP', 'TODO' ]; /// FIXME[@jrmykolyn] - `keywords` should be global/configurable.
+	var output = {};
+
+	// Check `input` for text matching each of the `keywords`.
+	keywords.forEach( ( keyword ) => {
+		let pattern = new RegExp( keyword + '(.*)$', 'gmi' );
+
+		output[ keyword ] = input.match( pattern );
+	} );
+
+	return output;
+}
+
+/**
+ * Given an array of argument names, function prints out an approrpriate error message.
+ *
+ * @param {Array} `args` - A list of argument names to be printed out.
+ */
+function printArgError( args ) {
+	// Ensure that `args` is an array.
+	args = ( Array.isArray( args ) ) ? args : ( typeof args === 'string' ) ? [ args ] : [];
+
+	// Print conditional error message based on length of `args` array.
+	if ( args && args.length ) {
+		console.log( `Whoops! Function called with missing or invalid argument(s):` );
+		args.forEach( ( arg ) => { console.log( `- ${arg}` ); } );
+	} else {
+		console.log( 'Whoops! Something went wrong!' );
+	}
+}
+
+/**
+ * Given a `logFile` object, function assembles and returns a timestamped 'output' file name.
+ *
+ * @param {Object} `logFile` - An object which includes various pieces of the 'output' file name, such as: `base`; `extension`, etc.
+ * @return {String}
+ */
+function getLogName( logFile ) {
+	logFile = ( logFile && typeof logFile === 'object' ) ? logFile : {};
+
+	var base = logFile.base || 'frontburner';
+	var extension = logFile.extension || '.log';
+	var timestamp = new Date().getTime();
+
+	return ( `${base}_${timestamp}${extension}` );
+}
+
 /* -------------------------------------------------- */
 /* INIT */
 /* -------------------------------------------------- */
@@ -39,7 +105,16 @@ if ( !ARGS || !ARGS.length ) {
 				}
 
 				if ( data instanceof Buffer ) {
-					console.log( decoder.write( data ) );
+					var noteObj = getInlineNotes( decoder.write( data ), 'FIXME' );
+
+					fs.writeFile( process.cwd() + '/' + getLogName( logFile ), JSON.stringify( noteObj, null, '\t' ), ( err, data ) => {
+						if ( err ) {
+							console.error( 'Whoops! Something went wrong!' );
+							return;
+						}
+
+						console.log( 'Success!' ); /// TODO[@jrmykolyn] - Update 'success' message to include useful info.
+					} );
 				} else {
 					/// TODO[@jrmykolyn] - Handle case where data *IS NOT* a Buffer instance.
 				}
