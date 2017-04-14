@@ -53,7 +53,6 @@ function getInlineNotes( input, keywords ) {
 	return output;
 }
 
-
 /**
  * Given a `noteObj`, function generates a human-readable version of the included data.
  *
@@ -96,6 +95,34 @@ function printArgError( args ) {
 	} else {
 		console.log( 'Whoops! Something went wrong!' );
 	}
+}
+
+function printHelp() {
+	console.log( '--------------------------------------------------' );
+	console.log( 'INTRO' );
+	console.log( '---------------' );
+	console.log( 'Frontburner is designed to be run from the command line using the `fbr` command.' );
+	console.log( 'Start with the command, followed by the name of the file that you want to \'scan\'.' );
+	console.log( '\n' );
+	console.log( 'EXAMPLE:' );
+	console.log( '---------------' );
+	console.log( 'fbr path/to/my/file' );
+	console.log( '\n' );
+	console.log( 'OPTIONS:' );
+	console.log( '---------------' );
+	console.log( '--display' );
+	console.log( 'Including this option will log the contents of the \'scan\' to stdout, and suppress the creation of a log file.' );
+	console.log( '\r' );
+	console.log( 'Usage:' );
+	console.log( 'fbr path/to/my/file --display' );
+	console.log( '\n' );
+	console.log( '--keywords' );
+	console.log( 'This option overrides the default \'keywords\' that Frontburner checks for. User selected keywords must be provided as a series of comma separated strings.' );
+	console.log( '\r' );
+	console.log( 'Usage:' );
+	console.log( 'fbr path/to/my/file --keywords=FIXME,TODO' );
+	console.log( '--------------------------------------------------' );
+	console.log( '\n' );
 }
 
 /**
@@ -170,6 +197,10 @@ if ( !ARGS || !ARGS.length ) {
 	fileName = ARGS[ 0 ];
 
 	switch ( fileName ) {
+		case 'help':
+			printHelp();
+
+			break;
 		case '*':
 		case '.':
 			/// TODO[@jrmykolyn] - Handle recursive 'scan' of subfolders.'
