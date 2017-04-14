@@ -1,13 +1,13 @@
 {
   "name": "frontburner",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Frontburner reads through project files and outputs lists/logs of 'FIXME', 'TODO', and similar notes.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-	"fbr": "./index.js"
+    "fbr": "./index.js"
   },
   "author": "Jesse R Mykolyn",
   "license": "ISC",
