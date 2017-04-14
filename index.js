@@ -1,8 +1,12 @@
 /* -------------------------------------------------- */
 /* IMPORT MODULES */
 /* -------------------------------------------------- */
+// Node
 const fs = require( 'fs' );
 const StringDecoder = require( 'string_decoder' ).StringDecoder;
+
+// Project
+const config = require( `${__dirname}/config/frontburner.config.js` ) || {};
 
 /* -------------------------------------------------- */
 /* DECLARE VARS */
@@ -33,11 +37,10 @@ function getInlineNotes( input ) {
 
 	if ( !input ) { printArgError( 'input' ); return; }
 
-	var keywords = [ 'FIXME', 'TEMP', 'TODO' ]; /// FIXME[@jrmykolyn] - `keywords` should be global/configurable.
 	var output = {};
 
 	// Check `input` for text matching each of the `keywords`.
-	keywords.forEach( ( keyword ) => {
+	config.keywords.forEach( ( keyword ) => {
 		let pattern = new RegExp( keyword + '(.*)$', 'gmi' );
 
 		output[ keyword ] = input.match( pattern );
