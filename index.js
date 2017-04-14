@@ -14,6 +14,7 @@ const config = require( `${__dirname}/config/frontburner.config.js` ) || {};
 const decoder = new StringDecoder( 'utf8' );
 
 const ARGS = process.argv.slice( 2 ) || [];
+const OPTIONS = ARGS.filter( ( arg ) => { return arg.substring( 0, 2 ) === '--'; } );
 
 var fileName = null;
 var filePath = null;
@@ -32,15 +33,16 @@ var logFile = {
  * @param {String} `input` - The text content to check.
  * @return {Object}
  */
-function getInlineNotes( input ) {
+function getInlineNotes( input, keywords ) {
 	input = input || null;
+	keywords = ( Array.isArray( keywords ) && keywords.length ) ? keywords : [];
 
 	if ( !input ) { printArgError( 'input' ); return; }
 
 	var output = {};
 
 	// Check `input` for text matching each of the `keywords`.
-	config.keywords.forEach( ( keyword ) => {
+	keywords.forEach( ( keyword ) => {
 		let pattern = new RegExp( keyword + '(.*)$', 'gmi' );
 
 		output[ keyword ] = input.match( pattern );
@@ -110,6 +112,25 @@ function getLogName( logFile ) {
 	return ( `${base}_${timestamp}${extension}` );
 }
 
+/**
+ * Given an array of 'option' strings, function extracts and returns a 'keywords' array.
+ *
+ * If the arguments are invalid or the desired 'option' is not found, function returns `null`.
+ *
+ * @param {Array} `options`
+ * @return {Null|Array}
+ */
+function getKeywordsFromOptions( options ) {
+	if ( !options || !options.length ) {
+		return null;
+	} else {
+		var keywordsString = options.filter( ( option ) => { return option.includes( '--keywords' ); } )[ 0 ];
+		var keywordsArr = keywordsString.split( '=' )[ 1 ].split( ',' );
+
+		return ( Array.isArray( keywordsArr ) && keywordsArr.length ) ? keywordsArr : null;
+	}
+}
+
 /* -------------------------------------------------- */
 /* INIT */
 /* -------------------------------------------------- */
@@ -117,6 +138,7 @@ if ( !ARGS || !ARGS.length ) {
 	/// TODO[@jrmykolyn] - Display warning/error/menu.
 } else {
 	fileName = ARGS[ 0 ];
+
 
 	switch ( fileName ) {
 		case '*':
@@ -135,7 +157,8 @@ if ( !ARGS || !ARGS.length ) {
 				}
 
 				if ( data instanceof Buffer ) {
-					var noteObj = getInlineNotes( decoder.write( data ), 'FIXME' );
+					var keywords = getKeywordsFromOptions( OPTIONS ) || config.keywords
+					var noteObj = getInlineNotes( decoder.write( data ), keywords );
 					var outputText = formatNoteObj( noteObj );
 
 					fs.writeFile( process.cwd() + '/' + getLogName( logFile ), outputText, ( err, data ) => {
