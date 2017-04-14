@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- Added support for 'help' command (eg. `fbr help`).
+
 ## [0.1.0] - 2017-04-14
 ### Added
 - Added project configuration file ('config/frontburner.config.js').
