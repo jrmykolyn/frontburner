@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.1.2] - 2017-04-17
 ### Added
 - Added ESLint config. file to project.
+
+### Changed
+- Fixed formatting in 'index.js', as per ESLint flags.
 
 ## [0.1.1] - 2017-04-17
 ### Added
