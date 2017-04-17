@@ -16,6 +16,7 @@
 /* -------------------------------------------------- */
 // Node
 const fs = require( 'fs' );
+const path = require( 'path' );
 const StringDecoder = require( 'string_decoder' ).StringDecoder;
 
 // Project
@@ -41,6 +42,24 @@ var logFile = {
 /* DECLARE FUNCTIONS */
 /* -------------------------------------------------- */
 /**
+ * Given an object of file `data`, function formats and returns all required/related meta info.
+ *
+ * @param {Object} `data`
+ * @return {Object}
+ */
+function getFileMeta( data ) {
+	data = ( data && typeof data === 'object' ) ? data : null;
+
+	if ( !data ) { printArgError( 'data' ); return null; }
+
+	var output = {};
+
+	output.fileName = ( data.file ) ? path.basename( data.file ) : null;
+
+	return output;
+}
+
+/**
  * Given an `input` string, function returns an object containing all occurrences of the specified `keywords`.
  *
  * @param {String} `input` - The text content to check.
@@ -58,6 +77,7 @@ function getInlineNotes( input, keywords ) {
 	keywords.forEach( ( keyword ) => {
 		let pattern = new RegExp( keyword + '(.*)$', 'gmi' );
 
+		// ...
 		output[ keyword ] = input.match( pattern );
 	} );
 
@@ -75,14 +95,25 @@ function formatNoteObj( noteObj ) {
 
 	var output = '';
 
-	if ( !noteObj ) { printArgError( 'noteObj' ); }
+	if ( !noteObj || typeof noteObj !== 'object' ) { printArgError( 'noteObj' ); }
 
-	for ( let key in noteObj ) {
-		if ( noteObj[ key ] && Array.isArray( noteObj[ key ] ) ) {
+	// Print 'meta' info.
+	output += '==================================================';
+	output += '\n';
+	for ( let key in noteObj.meta ) {
+		output += `${ key }: ${ noteObj.meta[ key ] }`;
+		output += '\n';
+	}
+	output += '==================================================';
+	output += '\n\n';
+
+	// Print 'matches' info.
+	for ( let key in noteObj.matches ) {
+		if ( noteObj.matches[ key ] && Array.isArray( noteObj.matches[ key ] ) ) {
 			output += `${key}\n`;
 			output += '--------------------------------------------------';
 			output += '\n';
-			output += noteObj[ key ].reduce( ( a1, a2 ) => { return `${a1}\n${a2}\n`; } );
+			output += noteObj.matches[ key ].reduce( ( a1, a2 ) => { return `${a1}\n${a2}\n`; } );
 			output += '\n\n';
 		}
 	}
@@ -227,10 +258,15 @@ if ( !ARGS || !ARGS.length ) {
 			}
 
 			if ( data instanceof Buffer ) {
+				var noteObj = {};
+				var outputText = '';
 				var keywords = getKeywordsFromOptions( OPTIONS ) || config.keywords;
-				var noteObj = getInlineNotes( decoder.write( data ), keywords );
-				var outputText = formatNoteObj( noteObj );
 				var displayOnly = !!extractOption( '--display', OPTIONS );
+
+				noteObj.meta = getFileMeta( { file: filePath } );
+				noteObj.matches = getInlineNotes( decoder.write( data ), keywords );
+
+				outputText = formatNoteObj( noteObj );
 
 				if ( displayOnly ) {
 					console.log( outputText );
