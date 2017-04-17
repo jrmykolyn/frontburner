@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- Added ESLint config. file to project.
+
 ## [0.1.1] - 2017-04-17
 ### Added
 - Added support for 'help' command (eg. `fbr help`).
