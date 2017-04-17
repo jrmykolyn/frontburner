@@ -1,6 +1,17 @@
 #! /usr/bin/env node
 
 /* -------------------------------------------------- */
+// DECLARE `ESLint` GLOBALS
+/* -------------------------------------------------- */
+// 'global' declarations below required to prevent ESLint errors.
+/* global
+	__dirname
+	process
+	Buffer
+	console
+*/
+
+/* -------------------------------------------------- */
 /* IMPORT MODULES */
 /* -------------------------------------------------- */
 // Node
@@ -90,7 +101,7 @@ function printArgError( args ) {
 
 	// Print conditional error message based on length of `args` array.
 	if ( args && args.length ) {
-		console.log( `Whoops! Function called with missing or invalid argument(s):` );
+		console.log( 'Whoops! Function called with missing or invalid argument(s):' );
 		args.forEach( ( arg ) => { console.log( `- ${arg}` ); } );
 	} else {
 		console.log( 'Whoops! Something went wrong!' );
@@ -196,46 +207,46 @@ if ( !ARGS || !ARGS.length ) {
 	fileName = ARGS[ 0 ];
 
 	switch ( fileName ) {
-		case 'help':
-			printHelp();
+	case 'help':
+		printHelp();
 
-			break;
-		case '*':
-		case '.':
-			/// TODO[@jrmykolyn] - Handle recursive 'scan' of subfolders.'
-			console.error( 'Whoops! The following option isn\'t currently supported: ', fileName );
+		break;
+	case '*':
+	case '.':
+		/// TODO[@jrmykolyn] - Handle recursive 'scan' of subfolders.'
+		console.error( 'Whoops! The following option isn\'t currently supported: ', fileName );
 
-			break;
-		default:
-			filePath = process.cwd() + '/' + fileName;
+		break;
+	default:
+		filePath = process.cwd() + '/' + fileName;
 
-			fs.readFile( filePath, ( err, data ) => {
-				if ( err ) {
-					console.log( 'Whoops! Something went wrong!' );
-					return;
-				}
+		fs.readFile( filePath, ( err, data ) => {
+			if ( err ) {
+				console.log( 'Whoops! Something went wrong!' );
+				return;
+			}
 
-				if ( data instanceof Buffer ) {
-					var keywords = getKeywordsFromOptions( OPTIONS ) || config.keywords
-					var noteObj = getInlineNotes( decoder.write( data ), keywords );
-					var outputText = formatNoteObj( noteObj );
-					var displayOnly = !!extractOption( '--display', OPTIONS );
+			if ( data instanceof Buffer ) {
+				var keywords = getKeywordsFromOptions( OPTIONS ) || config.keywords;
+				var noteObj = getInlineNotes( decoder.write( data ), keywords );
+				var outputText = formatNoteObj( noteObj );
+				var displayOnly = !!extractOption( '--display', OPTIONS );
 
-					if ( displayOnly ) {
-						console.log( outputText );
-					} else {
-						fs.writeFile( process.cwd() + '/' + getLogName( logFile ), outputText, ( err, data ) => {
-							if ( err ) {
-								console.error( 'Whoops! Something went wrong!' );
-								return;
-							}
-
-							console.log( 'Success!' ); /// TODO[@jrmykolyn] - Update 'success' message to include useful info.
-						} );
-					}
+				if ( displayOnly ) {
+					console.log( outputText );
 				} else {
-					/// TODO[@jrmykolyn] - Handle case where data *IS NOT* a Buffer instance.
+					fs.writeFile( process.cwd() + '/' + getLogName( logFile ), outputText, ( err ) => {
+						if ( err ) {
+							console.error( 'Whoops! Something went wrong!' );
+							return;
+						}
+
+						console.log( 'Success!' ); /// TODO[@jrmykolyn] - Update 'success' message to include useful info.
+					} );
 				}
-			} );
+			} else {
+				/// TODO[@jrmykolyn] - Handle case where data *IS NOT* a Buffer instance.
+			}
+		} );
 	}
 }
