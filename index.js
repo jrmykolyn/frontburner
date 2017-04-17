@@ -153,8 +153,8 @@ function getKeywordsFromOptions( options ) {
 	// Validate/re-assign args.
 	options = ( Array.isArray( options ) && options.length ) ? options : null;
 
-	// Log errors if args are missing/invalid.
-	if ( !options ) { printArgError( 'options' ); return null; }
+	// Return `null` if `options` missing or invalid.
+	if ( !options ) { return null; }
 
 	var keywordsString = extractOption( '--keywords', options );
 	var keywordsArr = null;
@@ -180,9 +180,8 @@ function extractOption( option, options ) {
 	option = ( option && typeof option === 'string' ) ? option : null;
 	options = ( Array.isArray( options ) && options.length ) ? options : null;
 
-	// Log errors if args are missing/invalid.
-	if ( !option ) { printArgError( 'option' ); return null; }
-	if ( !options ) { printArgError( 'options' ); return null; }
+	// Return null if `option` or `options` missing/invalid.
+	if ( !option || !options ) { return null; }
 
 	// Return first matched option or `null`.
 	return options.filter( ( opt ) => { return opt.includes( option ); } )[ 0 ] || null;
