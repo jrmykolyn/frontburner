@@ -72,16 +72,52 @@ function getInlineNotes( input, keywords ) {
 	if ( !input ) { printArgError( 'input' ); return; }
 
 	var output = {};
+	var prefixCaptureGroup = getPrefixCaptureGroup( config.prefixes );
 
 	// Check `input` for text matching each of the `keywords`.
 	keywords.forEach( ( keyword ) => {
-		let pattern = new RegExp( keyword + '(.*)$', 'gmi' );
+		let pattern = new RegExp( `${prefixCaptureGroup}\\s*${keyword}(.*)$`, 'gmi' );
 
 		// ...
 		output[ keyword ] = input.match( pattern );
 	} );
 
 	return output;
+}
+
+/**
+ * Given an array of strings, functions returns a regex capture group.
+ *
+ * Note that certain special characters (eg. '/', '*', etc.) are escaped.
+ *
+ * @param {Array} `prefixes`
+ * @return {String}
+ */
+function getPrefixCaptureGroup( prefixes ) {
+	return `(${prefixes.map( escapeSpecialChars ).join( '|' )})`;
+}
+
+
+/**
+ * Given a string, function escapes any special characters and returns the result.
+ *
+ * Note that the special characters are matched against a 'whitelist' defined within the function body.
+ *
+ * @param {String} `str`
+ * @return {String}
+ */
+function escapeSpecialChars( str ) {
+	var specialChars = [ '/', '*' ]; /// TODO[@jrmykolyn] - Move collection of special chars. into config. var.
+
+	if ( !str || typeof str !== 'string') {
+		return str;
+	}
+
+	return str.split( '' )
+		.map( ( char ) => {
+			return ( specialChars.includes( char ) ) ? '\\' + char : char; // NOTE - Extra '\' character required in order to escape... the escape...
+		} )
+		.join( '' );
 }
 
 /**

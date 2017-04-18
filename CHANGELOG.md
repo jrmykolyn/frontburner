@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Updated program to output file meta info.
+- Added 'prefixes' array to project configuration.
 
 ### Changed
-- ...
+- Updated program to check for presence of 'prefix' when 'scanning' input for keywords.
 
 ## [0.1.2] - 2017-04-17
 ### Added
