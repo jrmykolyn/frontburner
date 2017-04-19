@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Updated program to output file meta info.
 - Added 'prefixes' array to project configuration.
+- Added `Jasmine` testing framework to project.
 
 ### Changed
 - Updated program to check for presence of 'prefix' when 'scanning' input for keywords.
