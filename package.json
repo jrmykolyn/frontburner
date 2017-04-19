@@ -11,5 +11,8 @@
   },
   "author": "Jesse R Mykolyn",
   "license": "ISC",
-  "preferGlobal": true
+  "preferGlobal": true,
+  "devDependencies": {
+    "jasmine": "^2.5.3"
+  }
 }
