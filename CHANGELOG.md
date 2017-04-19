@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Updated program to check for presence of 'prefix' when 'scanning' input for keywords.
 - Moved argument/option parsing logic into dedicated module (`lib/input-parser.js`).
+- Added `InputParser#getOptions` method: used to quickly return array of options provided at runtime.
 
 ## [0.1.2] - 2017-04-17
 ### Added
