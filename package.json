@@ -4,7 +4,7 @@
   "description": "Frontburner reads through project files and outputs lists/logs of 'FIXME', 'TODO', and similar notes.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine"
   },
   "bin": {
     "fbr": "./index.js"
