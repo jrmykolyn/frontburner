@@ -21,14 +21,15 @@ const StringDecoder = require( 'string_decoder' ).StringDecoder;
 
 // Project
 const config = require( `${__dirname}/config/frontburner.config.js` ) || {};
+const InputParser = require( './lib/input-parser' );
 
 /* -------------------------------------------------- */
 /* DECLARE VARS */
 /* -------------------------------------------------- */
-const decoder = new StringDecoder( 'utf8' );
-
 const ARGS = process.argv.slice( 2 ) || [];
-const OPTIONS = ARGS.filter( ( arg ) => { return arg.substring( 0, 2 ) === '--'; } );
+
+const decoder = new StringDecoder( 'utf8' );
+const inputParser = new InputParser( ARGS ); /// TEMP
 
 var fileName = null;
 var filePath = null;
@@ -219,52 +220,6 @@ function getLogName( logFile ) {
 	return ( `${base}_${timestamp}${extension}` );
 }
 
-/**
- * Given an array of 'option' strings, function extracts and returns a 'keywords' array.
- *
- * If the arguments are invalid or the desired 'option' is not found, function returns `null`.
- *
- * @param {Array} `options`
- * @return {Null|Array}
- */
-function getKeywordsFromOptions( options ) {
-	// Validate/re-assign args.
-	options = ( Array.isArray( options ) && options.length ) ? options : null;
-
-	// Return `null` if `options` missing or invalid.
-	if ( !options ) { return null; }
-
-	var keywordsString = extractOption( '--keywords', options );
-	var keywordsArr = null;
-
-	try {
-		keywordsArr = keywordsString.split( '=' )[ 1 ].split( ',' );
-
-		return ( Array.isArray( keywordsArr ) && keywordsArr.length ) ? keywordsArr : null;
-	} catch ( err ) {
-		return null;
-	}
-}
-
-/**
- * Given a specific option, function returns it (including the key, value, and delimiter) if present within the `options` array.
- *
- * @param {String} `option`
- * @param {Array} `options`
- * @return {Null|String}
- */
-function extractOption( option, options ) {
-	// Validate/re-assign args.
-	option = ( option && typeof option === 'string' ) ? option : null;
-	options = ( Array.isArray( options ) && options.length ) ? options : null;
-
-	// Return null if `option` or `options` missing/invalid.
-	if ( !option || !options ) { return null; }
-
-	// Return first matched option or `null`.
-	return options.filter( ( opt ) => { return opt.includes( option ); } )[ 0 ] || null;
-}
-
 /* -------------------------------------------------- */
 /* INIT */
 /* -------------------------------------------------- */
@@ -296,8 +251,8 @@ if ( !ARGS || !ARGS.length ) {
 			if ( data instanceof Buffer ) {
 				var noteObj = {};
 				var outputText = '';
-				var keywords = getKeywordsFromOptions( OPTIONS ) || config.keywords;
-				var displayOnly = !!extractOption( '--display', OPTIONS );
+				var keywords = inputParser.getKeywords() || config.keywords;
+				var displayOnly = !!inputParser.getOption( '--display' );
 
 				noteObj.meta = getFileMeta( { file: filePath } );
 				noteObj.matches = getInlineNotes( decoder.write( data ), keywords );
