@@ -5,7 +5,6 @@
 /* -------------------------------------------------- */
 // 'global' declarations below required to prevent ESLint errors.
 /* global
-	__dirname
 	process
 	Buffer
 	console
@@ -16,12 +15,11 @@
 /* -------------------------------------------------- */
 // Node
 const fs = require( 'fs' );
-const path = require( 'path' );
 const StringDecoder = require( 'string_decoder' ).StringDecoder;
 
 // Project
-const config = require( `${__dirname}/config/frontburner.config.js` ) || {};
 const InputParser = require( './lib/input-parser' );
+const FileParser = require( './lib/file-parser' );
 
 /* -------------------------------------------------- */
 /* DECLARE VARS */
@@ -30,6 +28,7 @@ const ARGS = process.argv.slice( 2 ) || [];
 
 const decoder = new StringDecoder( 'utf8' );
 const inputParser = new InputParser( ARGS ); /// TEMP
+const fileParser = new FileParser();
 
 var fileName = null;
 var filePath = null;
@@ -43,139 +42,8 @@ var logFile = {
 /* DECLARE FUNCTIONS */
 /* -------------------------------------------------- */
 /**
- * Given an object of file `data`, function formats and returns all required/related meta info.
- *
- * @param {Object} `data`
- * @return {Object}
+ * ...
  */
-function getFileMeta( data ) {
-	data = ( data && typeof data === 'object' ) ? data : null;
-
-	if ( !data ) { printArgError( 'data' ); return null; }
-
-	var output = {};
-
-	output.fileName = ( data.file ) ? path.basename( data.file ) : null;
-
-	return output;
-}
-
-/**
- * Given an `input` string, function returns an object containing all occurrences of the specified `keywords`.
- *
- * @param {String} `input` - The text content to check.
- * @return {Object}
- */
-function getInlineNotes( input, keywords ) {
-	input = input || null;
-	keywords = ( Array.isArray( keywords ) && keywords.length ) ? keywords : [];
-
-	if ( !input ) { printArgError( 'input' ); return; }
-
-	var output = {};
-	var prefixCaptureGroup = getPrefixCaptureGroup( config.prefixes );
-
-	// Check `input` for text matching each of the `keywords`.
-	keywords.forEach( ( keyword ) => {
-		let pattern = new RegExp( `${prefixCaptureGroup}\\s*${keyword}(.*)$`, 'gmi' );
-
-		// ...
-		output[ keyword ] = input.match( pattern );
-	} );
-
-	return output;
-}
-
-/**
- * Given an array of strings, functions returns a regex capture group.
- *
- * Note that certain special characters (eg. '/', '*', etc.) are escaped.
- *
- * @param {Array} `prefixes`
- * @return {String}
- */
-function getPrefixCaptureGroup( prefixes ) {
-	return `(${prefixes.map( escapeSpecialChars ).join( '|' )})`;
-}
-
-
-/**
- * Given a string, function escapes any special characters and returns the result.
- *
- * Note that the special characters are matched against a 'whitelist' defined within the function body.
- *
- * @param {String} `str`
- * @return {String}
- */
-function escapeSpecialChars( str ) {
-	var specialChars = [ '/', '*' ]; /// TODO[@jrmykolyn] - Move collection of special chars. into config. var.
-
-	if ( !str || typeof str !== 'string') {
-		return str;
-	}
-
-	return str.split( '' )
-		.map( ( char ) => {
-			return ( specialChars.includes( char ) ) ? '\\' + char : char; // NOTE - Extra '\' character required in order to escape... the escape...
-		} )
-		.join( '' );
-}
-
-/**
- * Given a `noteObj`, function generates a human-readable version of the included data.
- *
- * @param {Object} `noteObj` - An object of 'inline note' data.
- * @return {String}
- */
-function formatNoteObj( noteObj ) {
-	noteObj = ( noteObj && typeof noteObj === 'object' ) ? noteObj : null;
-
-	var output = '';
-
-	if ( !noteObj || typeof noteObj !== 'object' ) { printArgError( 'noteObj' ); }
-
-	// Print 'meta' info.
-	output += '==================================================';
-	output += '\n';
-	for ( let key in noteObj.meta ) {
-		output += `${ key }: ${ noteObj.meta[ key ] }`;
-		output += '\n';
-	}
-	output += '==================================================';
-	output += '\n\n';
-
-	// Print 'matches' info.
-	for ( let key in noteObj.matches ) {
-		if ( noteObj.matches[ key ] && Array.isArray( noteObj.matches[ key ] ) ) {
-			output += `${key}\n`;
-			output += '--------------------------------------------------';
-			output += '\n';
-			output += noteObj.matches[ key ].reduce( ( a1, a2 ) => { return `${a1}\n${a2}\n`; } );
-			output += '\n\n';
-		}
-	}
-
-	return output;
-}
-
-/**
- * Given an array of argument names, function prints out an approrpriate error message.
- *
- * @param {Array} `args` - A list of argument names to be printed out.
- */
-function printArgError( args ) {
-	// Ensure that `args` is an array.
-	args = ( Array.isArray( args ) ) ? args : ( typeof args === 'string' ) ? [ args ] : [];
-
-	// Print conditional error message based on length of `args` array.
-	if ( args && args.length ) {
-		console.log( 'Whoops! Function called with missing or invalid argument(s):' );
-		args.forEach( ( arg ) => { console.log( `- ${arg}` ); } );
-	} else {
-		console.log( 'Whoops! Something went wrong!' );
-	}
-}
-
 function printHelp() {
 	console.log( '--------------------------------------------------' );
 	console.log( 'INTRO' );
@@ -249,15 +117,17 @@ if ( !ARGS || !ARGS.length ) {
 			}
 
 			if ( data instanceof Buffer ) {
-				var noteObj = {};
 				var outputText = '';
-				var keywords = inputParser.getKeywords() || config.keywords;
 				var displayOnly = !!inputParser.getOption( '--display' );
 
-				noteObj.meta = getFileMeta( { file: filePath } );
-				noteObj.matches = getInlineNotes( decoder.write( data ), keywords );
+				fileParser.addFile( {
+					meta: {
+						path: filePath,
+					},
+					data: decoder.write( data )
+				} );
 
-				outputText = formatNoteObj( noteObj );
+				outputText = fileParser.parse();
 
 				if ( displayOnly ) {
 					console.log( outputText );
