@@ -8,5 +8,9 @@ module.exports = {
 		'FIXME',
 		'TEMP',
 		'TODO'
-	]
+	],
+	logFile: {
+		base: 'frontburner',
+		extension: '.log'
+	}
 };

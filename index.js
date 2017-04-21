@@ -20,6 +20,7 @@ const StringDecoder = require( 'string_decoder' ).StringDecoder;
 // Project
 const InputParser = require( './lib/input-parser' );
 const FileParser = require( './lib/file-parser' );
+const OutputParser = require( './lib/output-parser' );
 const Logger = require( './lib/logger' );
 
 /* -------------------------------------------------- */
@@ -30,34 +31,11 @@ const ARGS = process.argv.slice( 2 ) || [];
 const decoder = new StringDecoder( 'utf8' );
 const inputParser = new InputParser( ARGS ); /// TEMP
 const fileParser = new FileParser();
+const outputParser = new OutputParser();
 const logger = new Logger();
 
 var fileName = null;
 var filePath = null;
-
-var logFile = {
-	base: 'frontburner',
-	extension: '.log'
-};
-
-/* -------------------------------------------------- */
-/* DECLARE FUNCTIONS */
-/* -------------------------------------------------- */
-/**
- * Given a `logFile` object, function assembles and returns a timestamped 'output' file name.
- *
- * @param {Object} `logFile` - An object which includes various pieces of the 'output' file name, such as: `base`; `extension`, etc.
- * @return {String}
- */
-function getLogName( logFile ) {
-	logFile = ( logFile && typeof logFile === 'object' ) ? logFile : {};
-
-	var base = logFile.base || 'frontburner';
-	var extension = logFile.extension || '.log';
-	var timestamp = new Date().getTime();
-
-	return ( `${base}_${timestamp}${extension}` );
-}
 
 /* -------------------------------------------------- */
 /* INIT */
@@ -103,14 +81,7 @@ if ( !ARGS || !ARGS.length ) {
 				if ( displayOnly ) {
 					console.log( outputText );
 				} else {
-					fs.writeFile( process.cwd() + '/' + getLogName( logFile ), outputText, ( err ) => {
-						if ( err ) {
-							console.error( 'Whoops! Something went wrong!' );
-							return;
-						}
-
-						console.log( 'Success!' ); /// TODO[@jrmykolyn] - Update 'success' message to include useful info.
-					} );
+					outputParser.writeLog( outputText );
 				}
 			} else {
 				/// TODO[@jrmykolyn] - Handle case where data *IS NOT* a Buffer instance.
