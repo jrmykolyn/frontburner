@@ -4,13 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.2.0] - 2017-09-06
 ### Added
+- Added support for 'multifile' scanning (triggered when `fbr` is invoked with either of the following values as the first argument: `.`; `*`).
 - Updated program to output file meta info.
 - Added 'prefixes' array to project configuration.
 - Added `Jasmine` testing framework to project.
+- Added development dependencies: `bluebird`; `recursive-readdir`.
+- Added `package-lock.json` file.
 
 ### Changed
+- Updated `InputParser` to parse/return options.
 - Updated program to check for presence of 'prefix' when 'scanning' input for keywords.
 - Moved argument/option parsing logic into dedicated module (`lib/input-parser.js`).
 - Moved file parsing logic into dedicated module (`lib/file-parser.js`).
