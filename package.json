@@ -1,6 +1,6 @@
 {
   "name": "frontburner",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Frontburner reads through project files and outputs lists/logs of 'FIXME', 'TODO', and similar notes.",
   "main": "index.js",
   "scripts": {
