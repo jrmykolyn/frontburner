@@ -35,4 +35,6 @@ describe( 'Test "InputParser"', function() {
 
 		expect( typeof inputParser.getSettings() ).toBe( 'object' );
 	} );
+
+	/// TODO[@jrmykolyn]: Write test(s) for `#getOption()`.
 } );
