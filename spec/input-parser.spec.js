@@ -18,7 +18,7 @@ describe( 'Test "InputParser"', function() {
 	} );
 
 	it( 'Should instantiate successfully when provided with a single, Array-type argument.', function() {
-		var inputParser = new InputParser( [ 1, 2, 3, 4, 5 ] );
+		var inputParser = new InputParser( [ 'path/to/file', '--display' ] );
 
 		expect( inputParser instanceof InputParser ).toBe( true );
 	} );
@@ -28,5 +28,11 @@ describe( 'Test "InputParser"', function() {
 		var options = inputParser.getOptions();
 
 		expect( Array.isArray( options ) && options.length === 0 ).toBe( true );
+	} );
+
+	it( 'Should return a object of settings data when the `#getSettings` method is called.', function() {
+		var inputParser = new InputParser( [ 'path/to/file' ] );
+
+		expect( typeof inputParser.getSettings() ).toBe( 'object' );
 	} );
 } );

@@ -14,5 +14,8 @@
   "preferGlobal": true,
   "devDependencies": {
     "jasmine": "^2.5.3"
+  },
+  "dependencies": {
+    "deepmerge": "^1.3.2"
   }
 }

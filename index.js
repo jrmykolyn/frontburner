@@ -76,7 +76,7 @@ if ( !ARGS || !ARGS.length ) {
 					data: decoder.write( data )
 				} );
 
-				outputText = fileParser.parse();
+				outputText = fileParser.parse( inputParser.getSettings() );
 
 				if ( displayOnly ) {
 					console.log( outputText );
