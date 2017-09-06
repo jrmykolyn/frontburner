@@ -17,6 +17,10 @@
 const fs = require( 'fs' );
 const StringDecoder = require( 'string_decoder' ).StringDecoder;
 
+// Vendor
+const recursive = require( 'recursive-readdir' );
+const Promise = require( 'bluebird' );
+
 // Project
 const InputParser = require( './lib/input-parser' );
 const FileParser = require( './lib/file-parser' );
@@ -29,63 +33,91 @@ const Logger = require( './lib/logger' );
 const ARGS = process.argv.slice( 2 ) || [];
 
 const decoder = new StringDecoder( 'utf8' );
-const inputParser = new InputParser( ARGS ); /// TEMP
+const inputParser = new InputParser( ARGS );
 const fileParser = new FileParser();
 const outputParser = new OutputParser();
 const logger = new Logger();
 
-var fileName = null;
-var filePath = null;
+/* -------------------------------------------------- */
+/* DECLARE FUNCTIONS */
+/* -------------------------------------------------- */
+function init( ARGS ) {
+	var fileName = null;
+	var filePath = null;
+	var filePaths = [];
+	var multiFile = false;
+
+	return new Promise( function( resolve, reject ) {
+		if ( !ARGS || !ARGS.length ) {
+			/// TODO[@jrmykolyn] - Display warning/error/menu.
+		} else {
+			fileName = ARGS[ 0 ];
+
+			switch ( fileName ) {
+				case 'help':
+					console.log( logger.help() );
+
+					break;
+				case '*':
+				case '.':
+					multiFile = true;
+				default:
+					if ( multiFile ) {
+						/// TODO[@jrmykolyn]: Move 'excludes' into config.
+						recursive( __dirname, [ 'node_modules', '.git', 'frontburner*' ], function( err, files ) {
+							filePaths = files.map( function ( filePath ) {
+								return [ filePath, fs.readFileSync( filePath, 'utf8' ) ]
+							} );
+
+							resolve( filePaths );
+						} );
+					} else {
+						// Prepend current dir. if `fileName` is not an absolute path.
+						filePath = ( fileName.substring( 0, 1) === '/' ) ? fileName : `${process.cwd()}/${fileName}`;
+
+						filePaths.push( [ filePath, fs.readFileSync( filePath, 'utf8' ) ] );
+
+						resolve( filePaths );
+					}
+				}
+		}
+	} );
+}
+
+function parse( filePaths ) {
+	var settings = inputParser.getSettings();
+
+	return new Promise( function( resolve, reject ) {
+		filePaths.forEach( function( tuple ) {
+			let [ filePath, data ] = tuple;
+
+			fileParser.addFile( {
+				meta: {
+					path: filePath,
+				},
+				data: data,
+			} );
+		} );
+
+		resolve ( fileParser.parse( settings ) );
+	} );
+}
+
+function log( output ) {
+	if ( inputParser.getOption( '--display' ) ) {
+		console.log( output );
+	} else {
+		outputParser.writeLog( output );
+	}
+}
 
 /* -------------------------------------------------- */
 /* INIT */
 /* -------------------------------------------------- */
-if ( !ARGS || !ARGS.length ) {
-	/// TODO[@jrmykolyn] - Display warning/error/menu.
-} else {
-	fileName = ARGS[ 0 ];
-
-	switch ( fileName ) {
-	case 'help':
-		console.log( logger.help() );
-
-		break;
-	case '*':
-	case '.':
-		/// TODO[@jrmykolyn] - Handle recursive 'scan' of subfolders.'
-		console.error( 'Whoops! The following option isn\'t currently supported: ', fileName );
-
-		break;
-	default:
-		filePath = process.cwd() + '/' + fileName;
-
-		fs.readFile( filePath, ( err, data ) => {
-			if ( err ) {
-				console.log( 'Whoops! Something went wrong!' );
-				return;
-			}
-
-			if ( data instanceof Buffer ) {
-				var outputText = '';
-				var displayOnly = !!inputParser.getOption( '--display' );
-
-				fileParser.addFile( {
-					meta: {
-						path: filePath,
-					},
-					data: decoder.write( data )
-				} );
-
-				outputText = fileParser.parse( inputParser.getSettings() );
-
-				if ( displayOnly ) {
-					console.log( outputText );
-				} else {
-					outputParser.writeLog( outputText );
-				}
-			} else {
-				/// TODO[@jrmykolyn] - Handle case where data *IS NOT* a Buffer instance.
-			}
-		} );
-	}
-}
+/// TODO[@jrmykolyn]: `ARGS` should be extracted from `InputParser` instance.
+init( ARGS ).
+	then( parse )
+	.then( log )
+	.catch( function( err ) {
+		console.log( err );
+	} );
