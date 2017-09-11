@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.1] - 2017-09-11
+### Changed
+- Fixed issue where 'multifile' scanning (eg. `fbr .`) would log `frontburner` internal TODOs rather than current working directory.
+
 ## [0.2.0] - 2017-09-06
 ### Added
 - Added support for 'multifile' scanning (triggered when `fbr` is invoked with either of the following values as the first argument: `.`; `*`).
