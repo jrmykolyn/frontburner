@@ -64,7 +64,7 @@ function init( ARGS ) {
 				default:
 					if ( multiFile ) {
 						/// TODO[@jrmykolyn]: Move 'excludes' into config.
-						recursive( __dirname, [ 'node_modules', '.git', 'frontburner*' ], function( err, files ) {
+						recursive( process.cwd(), [ 'node_modules', '.git', 'frontburner*' ], function( err, files ) {
 							filePaths = files.map( function ( filePath ) {
 								return [ filePath, fs.readFileSync( filePath, 'utf8' ) ]
 							} );
