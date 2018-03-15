@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - ES6-ify module files. (topic-1)
 - Update module to use [`meow`](npmjs.com/package/meow) in place of bespoke input/argument parsing functions. (topic-2)
+- Resolved outstanding 'TODO' items. (topic-4)
 
 ### Removed
 - Remove `Logger` module and related tests. (topic-2)
