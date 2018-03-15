@@ -19,6 +19,7 @@
     "bluebird": "^3.5.0",
     "deepmerge": "^1.3.2",
     "line-number": "^0.1.0",
+    "meow": "^4.0.0",
     "recursive-readdir": "^2.2.1"
   }
 }
