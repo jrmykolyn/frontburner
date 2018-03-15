@@ -73,7 +73,7 @@ function init( ARGS ) {
 						} );
 					} else {
 						// Prepend current dir. if `fileName` is not an absolute path.
-						filePath = ( fileName.substring( 0, 1) === '/' ) ? fileName : `${process.cwd()}/${fileName}`;
+						filePath = ( fileName.substring( 0, 1 ) === '/' ) ? fileName : `${process.cwd()}/${fileName}`;
 
 						filePaths.push( [ filePath, fs.readFileSync( filePath, 'utf8' ) ] );
 
@@ -99,7 +99,7 @@ function parse( filePaths ) {
 			} );
 		} );
 
-		resolve ( fileParser.parse( settings ) );
+		resolve( fileParser.parse( settings ) );
 	} );
 }
 
@@ -115,8 +115,8 @@ function log( output ) {
 /* INIT */
 /* -------------------------------------------------- */
 /// TODO[@jrmykolyn]: `ARGS` should be extracted from `InputParser` instance.
-init( ARGS ).
-	then( parse )
+init( ARGS )
+	.then( parse )
 	.then( log )
 	.catch( function( err ) {
 		console.log( err );
