@@ -118,6 +118,6 @@ function log( output ) {
 init( ARGS )
 	.then( parse )
 	.then( log )
-	.catch( function( err ) {
+	.catch( ( err ) => {
 		console.log( err );
 	} );
