@@ -6,7 +6,6 @@
 // 'global' declarations below required to prevent ESLint errors.
 /* global
 	process
-	Buffer
 	console
 */
 
@@ -15,7 +14,6 @@
 /* -------------------------------------------------- */
 // Node
 const fs = require( 'fs' );
-const StringDecoder = require( 'string_decoder' ).StringDecoder;
 
 // Vendor
 const recursive = require( 'recursive-readdir' );
@@ -32,7 +30,6 @@ const Logger = require( './lib/logger' );
 /* -------------------------------------------------- */
 const ARGS = process.argv.slice( 2 ) || [];
 
-const decoder = new StringDecoder( 'utf8' );
 const inputParser = new InputParser( ARGS );
 const fileParser = new FileParser();
 const outputParser = new OutputParser();
@@ -47,7 +44,7 @@ function init( ARGS ) {
 	let filePaths = [];
 	let multiFile = false;
 
-	return new Promise( function( resolve, reject ) {
+	return new Promise( function( resolve ) {
 		if ( !ARGS || !ARGS.length ) {
 			/// TODO[@jrmykolyn] - Display warning/error/menu.
 		} else {
@@ -61,12 +58,13 @@ function init( ARGS ) {
 				case '*':
 				case '.':
 					multiFile = true;
+					// falls through
 				default:
 					if ( multiFile ) {
 						/// TODO[@jrmykolyn]: Move 'excludes' into config.
 						recursive( process.cwd(), [ 'node_modules', '.git', 'frontburner*' ], function( err, files ) {
 							filePaths = files.map( function ( filePath ) {
-								return [ filePath, fs.readFileSync( filePath, 'utf8' ) ]
+								return [ filePath, fs.readFileSync( filePath, 'utf8' ) ];
 							} );
 
 							resolve( filePaths );
@@ -79,7 +77,7 @@ function init( ARGS ) {
 
 						resolve( filePaths );
 					}
-				}
+			}
 		}
 	} );
 }
@@ -87,7 +85,7 @@ function init( ARGS ) {
 function parse( filePaths ) {
 	let settings = inputParser.getSettings();
 
-	return new Promise( function( resolve, reject ) {
+	return new Promise( function( resolve ) {
 		filePaths.forEach( function( tuple ) {
 			let [ filePath, data ] = tuple;
 

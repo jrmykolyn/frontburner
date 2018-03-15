@@ -1,3 +1,7 @@
+/* global
+	console
+*/
+
 ( function() {
 
 	/// TODO - Document function.

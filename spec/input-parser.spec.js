@@ -8,8 +8,10 @@ const InputParser = require( '../lib/input-parser' );
 
 describe( 'Test "InputParser"', function() {
 	it( 'Should return `undefined` when instantiated with an empty array.', function() {
+		let inputParser;
+
 		try {
-			let inputParser = new InputParser( [] );
+			inputParser = new InputParser( [] );
 		} catch ( err ) {
 			// console.log( err );
 		}
