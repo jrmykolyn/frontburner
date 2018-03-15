@@ -25,11 +25,11 @@ describe( 'Test "InputParser"', function() {
 		expect( inputParser instanceof InputParser ).toBe( true );
 	} );
 
-	it( 'Should return an empty array if instantiated with an argument of insufficient length.', function() {
+	it( 'Should return an empty object if instantiated with an argument of insufficient length.', function() {
 		let inputParser = new InputParser( [ 'path/to/file' ] );
 		let options = inputParser.getOptions();
 
-		expect( Array.isArray( options ) && options.length === 0 ).toBe( true );
+		expect( !!options && typeof options === 'object' ).toBe( true );
 	} );
 
 	it( 'Should return a object of settings data when the `#getSettings` method is called.', function() {
