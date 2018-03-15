@@ -24,17 +24,40 @@ const Promise = require( 'bluebird' );
 const InputParser = require( './lib/input-parser' );
 const FileParser = require( './lib/file-parser' );
 const OutputParser = require( './lib/output-parser' );
-const Logger = require( './lib/logger' );
 
 /* -------------------------------------------------- */
 /* DECLARE VARS */
 /* -------------------------------------------------- */
-const cli = meow();
+const cli = meow( {
+	help: `
+NAME
+	Frontburner
+
+SYNOPSIS
+	fbr [--display] [path/to/file]
+
+EXAMPLES
+	fbr index.js
+	fbr .
+	fbr lib/index.js --display
+
+DESCRIPTION
+	Frontburner is designed to be run from the command line using the \`fbr\` command.
+
+	Start with the command, followed by the name of the file that you want to 'scan'.'
+
+OPTIONS
+	--display
+	Including this option will log the contents of the \'scan\' to stdout, and suppress the creation of a log file.
+
+	--keywords
+	This option overrides the default \'keywords\' that Frontburner checks for. User selected keywords must be provided as a series of comma separated strings.
+	`,
+} );
 
 const inputParser = new InputParser( cli.input, cli.flags );
 const fileParser = new FileParser();
 const outputParser = new OutputParser();
-const logger = new Logger();
 
 /* -------------------------------------------------- */
 /* DECLARE FUNCTIONS */
@@ -52,10 +75,6 @@ function init() {
 			fileName = cli.input[ 0 ];
 
 			switch ( fileName ) {
-				case 'help':
-					console.log( logger.help() );
-
-					break;
 				case '*':
 				case '.':
 					multiFile = true;
