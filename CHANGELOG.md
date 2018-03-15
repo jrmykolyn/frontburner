@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+- ES6-ify module files. (topic-1)
+
 ## [0.2.1] - 2017-09-11
 ### Changed
 - Fixed issue where 'multifile' scanning (eg. `fbr .`) would log `frontburner` internal TODOs rather than current working directory.
