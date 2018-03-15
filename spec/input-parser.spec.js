@@ -38,5 +38,9 @@ describe( 'Test "InputParser"', function() {
 		expect( typeof inputParser.getSettings() ).toBe( 'object' );
 	} );
 
-	/// TODO[@jrmykolyn]: Write test(s) for `#getOption()`.
+	it( 'Should return the corresponding value when the `#getOption` method is called.', function() {
+		let inputParser = new InputParser( [ 'path/to/file' ], { testOption: 'Test Value' } );
+
+		expect( inputParser.getOption( 'testOption' ) ).toBe( 'Test Value' );
+	} );
 } );

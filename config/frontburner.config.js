@@ -12,5 +12,14 @@ module.exports = {
 	logFile: {
 		base: 'frontburner',
 		extension: '.log'
-	}
+	},
+	excludes: [
+		'node_modules',
+		'.git',
+		'frontburner*',
+	],
+	specialChars: [
+		'/',
+		'*',
+	],
 };

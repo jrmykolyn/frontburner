@@ -21,6 +21,8 @@ const recursive = require( 'recursive-readdir' );
 const Promise = require( 'bluebird' );
 
 // Project
+const config = require( './config/frontburner.config.js' );
+
 const InputParser = require( './lib/input-parser' );
 const FileParser = require( './lib/file-parser' );
 const OutputParser = require( './lib/output-parser' );
@@ -48,10 +50,10 @@ DESCRIPTION
 
 OPTIONS
 	--display
-	Including this option will log the contents of the \'scan\' to stdout, and suppress the creation of a log file.
+	Including this option will log the contents of the 'scan' to stdout, and suppress the creation of a log file.
 
 	--keywords
-	This option overrides the default \'keywords\' that Frontburner checks for. User selected keywords must be provided as a series of comma separated strings.
+	This option overrides the default 'keywords' that Frontburner checks for. User selected keywords must be provided as a series of comma separated strings.
 	`,
 } );
 
@@ -66,38 +68,27 @@ function init() {
 	let fileName = null;
 	let filePath = null;
 	let filePaths = [];
-	let multiFile = false;
 
 	return new Promise( function( resolve ) {
-		if ( !cli.input || !cli.input.length ) {
-			/// TODO[@jrmykolyn] - Display warning/error/menu.
+		fileName = cli.input[ 0 ];
+
+		if ( fileName === '.' ) {
+			recursive( process.cwd(), config.excludes, function( err, files ) {
+				filePaths = files.map( function( filePath ) {
+					return [ filePath, fs.readFileSync( filePath, 'utf8' ) ];
+				} );
+
+				resolve( filePaths );
+				return;
+			} );
 		} else {
-			fileName = cli.input[ 0 ];
+			// Prepend current dir. if `fileName` is not an absolute path.
+			filePath = ( fileName.substring( 0, 1 ) === '/' ) ? fileName : `${process.cwd()}/${fileName}`;
 
-			switch ( fileName ) {
-				case '*':
-				case '.':
-					multiFile = true;
-					// falls through
-				default:
-					if ( multiFile ) {
-						/// TODO[@jrmykolyn]: Move 'excludes' into config.
-						recursive( process.cwd(), [ 'node_modules', '.git', 'frontburner*' ], function( err, files ) {
-							filePaths = files.map( function ( filePath ) {
-								return [ filePath, fs.readFileSync( filePath, 'utf8' ) ];
-							} );
+			filePaths.push( [ filePath, fs.readFileSync( filePath, 'utf8' ) ] );
 
-							resolve( filePaths );
-						} );
-					} else {
-						// Prepend current dir. if `fileName` is not an absolute path.
-						filePath = ( fileName.substring( 0, 1 ) === '/' ) ? fileName : `${process.cwd()}/${fileName}`;
-
-						filePaths.push( [ filePath, fs.readFileSync( filePath, 'utf8' ) ] );
-
-						resolve( filePaths );
-					}
-			}
+			resolve( filePaths );
+			return;
 		}
 	} );
 }
