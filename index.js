@@ -16,6 +16,7 @@
 const fs = require( 'fs' );
 
 // Vendor
+const meow = require( 'meow' );
 const recursive = require( 'recursive-readdir' );
 const Promise = require( 'bluebird' );
 
@@ -28,9 +29,9 @@ const Logger = require( './lib/logger' );
 /* -------------------------------------------------- */
 /* DECLARE VARS */
 /* -------------------------------------------------- */
-const ARGS = process.argv.slice( 2 ) || [];
+const cli = meow();
 
-const inputParser = new InputParser( ARGS );
+const inputParser = new InputParser( cli.input, cli.flags );
 const fileParser = new FileParser();
 const outputParser = new OutputParser();
 const logger = new Logger();
@@ -38,17 +39,17 @@ const logger = new Logger();
 /* -------------------------------------------------- */
 /* DECLARE FUNCTIONS */
 /* -------------------------------------------------- */
-function init( ARGS ) {
+function init() {
 	let fileName = null;
 	let filePath = null;
 	let filePaths = [];
 	let multiFile = false;
 
 	return new Promise( function( resolve ) {
-		if ( !ARGS || !ARGS.length ) {
+		if ( !cli.input || !cli.input.length ) {
 			/// TODO[@jrmykolyn] - Display warning/error/menu.
 		} else {
-			fileName = ARGS[ 0 ];
+			fileName = cli.input[ 0 ];
 
 			switch ( fileName ) {
 				case 'help':
@@ -102,7 +103,7 @@ function parse( filePaths ) {
 }
 
 function log( output ) {
-	if ( inputParser.getOption( '--display' ) ) {
+	if ( inputParser.getOption( 'display' ) ) {
 		console.log( output );
 	} else {
 		outputParser.writeLog( output );
@@ -112,8 +113,7 @@ function log( output ) {
 /* -------------------------------------------------- */
 /* INIT */
 /* -------------------------------------------------- */
-/// TODO[@jrmykolyn]: `ARGS` should be extracted from `InputParser` instance.
-init( ARGS )
+init()
 	.then( parse )
 	.then( log )
 	.catch( ( err ) => {
