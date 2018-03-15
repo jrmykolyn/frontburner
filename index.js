@@ -42,10 +42,10 @@ const logger = new Logger();
 /* DECLARE FUNCTIONS */
 /* -------------------------------------------------- */
 function init( ARGS ) {
-	var fileName = null;
-	var filePath = null;
-	var filePaths = [];
-	var multiFile = false;
+	let fileName = null;
+	let filePath = null;
+	let filePaths = [];
+	let multiFile = false;
 
 	return new Promise( function( resolve, reject ) {
 		if ( !ARGS || !ARGS.length ) {
@@ -85,7 +85,7 @@ function init( ARGS ) {
 }
 
 function parse( filePaths ) {
-	var settings = inputParser.getSettings();
+	let settings = inputParser.getSettings();
 
 	return new Promise( function( resolve, reject ) {
 		filePaths.forEach( function( tuple ) {
