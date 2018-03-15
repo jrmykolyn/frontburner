@@ -12,7 +12,10 @@ module.exports = {
 		"no-console": 0,
 		"indent": [
 			"error",
-			"tab"
+			"tab",
+			{
+				"SwitchCase": 1
+			}
 		],
 		"linebreak-style": [
 			"error",
