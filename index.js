@@ -36,24 +36,31 @@ NAME
 	Frontburner
 
 SYNOPSIS
-	fbr [--display] [path/to/file]
+	fbr [--display --keywords=<foo,bar> --prefixes=<baz,quux>] [path/to/file]
 
 EXAMPLES
 	fbr index.js
 	fbr .
 	fbr lib/index.js --display
+	fbr . --keywords=TODO,FIXME
+	fbr . --prefixes=@
 
 DESCRIPTION
 	Frontburner is designed to be run from the command line using the \`fbr\` command.
 
-	Start with the command, followed by the name of the file that you want to 'scan'.
+	Start with the command, followed by the name of the file that you want to 'scan'. For example: \`fbr index.js\`.
+
+	To recursively scan the current working directory, invoke the \`fbr\` command with the '.' value.
 
 OPTIONS
 	--display
-	Including this option will log the contents of the 'scan' to stdout, and suppress the creation of a log file.
+	Suppress log file creation, print output to stdout.
 
-	--keywords
-	This option overrides the default 'keywords' that Frontburner checks for. User selected keywords must be provided as a series of comma separated strings.
+	--keywords=<foo,bar>
+	Override the default 'keywords' that Frontburner checks for. User selected keywords must be provided as a series of comma separated strings.
+
+	--prefixes=<baz,quux>
+	Override the default 'keyword prefixes' that Frontburner checks for. User selected prefixes must be provided as a series of comma separated strings.
 	`,
 } );
 
