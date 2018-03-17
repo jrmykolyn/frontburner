@@ -7,7 +7,7 @@
 const InputParser = require( '../lib/input-parser' );
 
 describe( 'Test "InputParser"', function() {
-	it( 'Should return `undefined` when instantiated with an empty array.', function() {
+	it( 'Should instantiate successfully when provided with an empty array.', function() {
 		let inputParser;
 
 		try {
@@ -16,11 +16,11 @@ describe( 'Test "InputParser"', function() {
 			// console.log( err );
 		}
 
-		expect( typeof inputParser ).toBe( 'undefined' );
+		expect( inputParser instanceof InputParser ).toBe( true );
 	} );
 
 	it( 'Should instantiate successfully when provided with a single, Array-type argument.', function() {
-		let inputParser = new InputParser( [ 'path/to/file', '--display' ] );
+		let inputParser = new InputParser( [ 'path/to/file' ] );
 
 		expect( inputParser instanceof InputParser ).toBe( true );
 	} );
@@ -30,6 +30,12 @@ describe( 'Test "InputParser"', function() {
 		let options = inputParser.getOptions();
 
 		expect( !!options && typeof options === 'object' ).toBe( true );
+	} );
+
+	it( 'Should return an array of arguments data when the `#getArgs` method is called.', function() {
+		let inputParser = new InputParser( [ 'path/to/file' ] );
+
+		expect( Array.isArray( inputParser.getArgs() ) ).toBe( true );
 	} );
 
 	it( 'Should return a object of settings data when the `#getSettings` method is called.', function() {
