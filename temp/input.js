@@ -3,6 +3,7 @@
 */
 
 ( function() {
+	// @todo - Test alternative 'TODO' syntax.
 
 	/// TODO - Document function.
 	function doThing( num ) {

@@ -1,8 +1,8 @@
 module.exports = {
 	prefixes: [
-		'//',
+		'@',
 		'/*',
-		'///'
+		'[/]{2,}',
 	],
 	keywords: [
 		'FIXME',
