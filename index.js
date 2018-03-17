@@ -46,7 +46,7 @@ EXAMPLES
 DESCRIPTION
 	Frontburner is designed to be run from the command line using the \`fbr\` command.
 
-	Start with the command, followed by the name of the file that you want to 'scan'.'
+	Start with the command, followed by the name of the file that you want to 'scan'.
 
 OPTIONS
 	--display
@@ -71,6 +71,10 @@ function init() {
 
 	return new Promise( function( resolve ) {
 		fileName = cli.input[ 0 ];
+
+		if ( !fileName ) {
+			throw new Error( 'Whoops! Frontburner requires at least one argument.' );
+		}
 
 		if ( fileName === '.' ) {
 			recursive( process.cwd(), config.excludes, function( err, files ) {
@@ -127,5 +131,5 @@ init()
 	.then( parse )
 	.then( log )
 	.catch( ( err ) => {
-		console.log( err );
+		console.log( err.message || err );
 	} );
