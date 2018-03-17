@@ -1,5 +1,7 @@
 # Frontburner
 
+![Frontburner](https://raw.githubusercontent.com/jrmykolyn/frontburner/master/frontburner.gif)
+
 ## Table of Contents
 - [About](#about)
 - [Installation](#installation)
@@ -10,6 +12,7 @@
 	- [Contibuting Overview](#contributing-overview)
 	- [Code Style](#code-style)
 	- [Testing](#testing)
+- [Attribution](#attribution)
 
 ## About
 Frontburner is a command line tool which scans project files and outputs a list/log of any 'FIXME', 'TODO' or related inline notes.
@@ -51,3 +54,6 @@ To run the test suite, complete the follow steps:
 - Clone the repository and navigate to the root folder from the command line.
 - Run `npm install`.
 - Run `npm test`.
+
+## Attribution
+- `README.md` gif: https://giphy.com/gifs/panicking-reaction-yUrUb9fYz6x7a/links
