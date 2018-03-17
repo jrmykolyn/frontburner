@@ -4,6 +4,8 @@
 	expect
 */
 
+const config = require( '../config/frontburner.config.js' );
+
 const FileParser = require( '../lib/file-parser' );
 
 describe( 'Test "FileParser"', function() {
@@ -53,6 +55,6 @@ describe( 'Test "FileParser"', function() {
 			data: ''
 		} );
 
-		expect( typeof fileParser.parse() ).toBe( 'string' );
+		expect( typeof fileParser.parse( config ) ).toBe( 'string' );
 	} );
 } );
