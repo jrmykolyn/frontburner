@@ -21,8 +21,6 @@ const recursive = require( 'recursive-readdir' );
 const Promise = require( 'bluebird' );
 
 // Project
-const config = require( './config/frontburner.config.js' );
-
 const InputParser = require( './lib/input-parser' );
 const FileParser = require( './lib/file-parser' );
 const OutputParser = require( './lib/output-parser' );
@@ -36,7 +34,7 @@ NAME
 	Frontburner
 
 SYNOPSIS
-	fbr [--display --keywords=<foo,bar> --prefixes=<baz,quux>] [path/to/file]
+	fbr [--display --excludes=<temp,logs> --prefixes=<baz,quux> --keywords=<foo,bar>] [path/to/file]
 
 EXAMPLES
 	fbr index.js
@@ -44,6 +42,7 @@ EXAMPLES
 	fbr lib/index.js --display
 	fbr . --keywords=TODO,FIXME
 	fbr . --prefixes=@
+	fbr . --excludes=logs
 
 DESCRIPTION
 	Frontburner is designed to be run from the command line using the \`fbr\` command.
@@ -56,11 +55,14 @@ OPTIONS
 	--display
 	Suppress log file creation, print output to stdout.
 
-	--keywords=<foo,bar>
-	Override the default 'keywords' that Frontburner checks for. User selected keywords must be provided as a series of comma separated strings.
+	--excludes=<temp,logs>
+	Override the files/folders which Frontburner excludes by default.
 
 	--prefixes=<baz,quux>
-	Override the default 'keyword prefixes' that Frontburner checks for. User selected prefixes must be provided as a series of comma separated strings.
+	Override the default 'keyword prefixes' that Frontburner checks for.
+
+	--keywords=<foo,bar>
+	Override the default 'keywords' that Frontburner checks for.
 	`,
 } );
 
@@ -84,7 +86,7 @@ function init() {
 		}
 
 		if ( fileName === '.' ) {
-			recursive( process.cwd(), config.excludes, function( err, files ) {
+			recursive( process.cwd(), inputParser.getSettings().excludes, function( err, files ) {
 				filePaths = files.map( function( filePath ) {
 					return [ filePath, fs.readFileSync( filePath, 'utf8' ) ];
 				} );
