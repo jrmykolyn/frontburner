@@ -4,13 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.2.2] - 2018-03-16
 ### Added
+- Add support for `--prefixes` flag.
+- Add support for `--excludes` flag.
 - Add [`meow`](npmjs.com/package/meow) to dependencies. (topic-2)
 
 ### Changed
 - ES6-ify module files. (topic-1)
 - Update module to use [`meow`](npmjs.com/package/meow) in place of bespoke input/argument parsing functions. (topic-2)
+- Update `README.md`. (topic-2)
 - Improve handling of `--keywords` CLI flag. (topic-5)
 - Resolve outstanding 'TODO' items. (topic-4)
 
