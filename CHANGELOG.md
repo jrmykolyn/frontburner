@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Add support for targeting folders by name (eg. `fbr /path/to/folder/`). (topic-7)
 
+### Changed
+- Decouple module logic from CLI wrapper. (topic-8)
+
 ## [0.2.2] - 2018-03-16
 ### Added
 - Add support for `--prefixes` flag.
