@@ -7,7 +7,7 @@
     "test": "jasmine"
   },
   "bin": {
-    "fbr": "./index.js"
+    "fbr": "./cli.js"
   },
   "author": "Jesse R Mykolyn",
   "license": "ISC",
