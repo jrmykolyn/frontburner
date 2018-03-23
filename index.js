@@ -49,7 +49,7 @@ DESCRIPTION
 
 	Start with the command, followed by the name of the file that you want to 'scan'. For example: \`fbr index.js\`.
 
-	To recursively scan the current working directory, invoke the \`fbr\` command with the '.' value.
+	To recursively scan a folder, provide the path. For example: \`fbr path/to/folder/\`.
 
 OPTIONS
 	--display
