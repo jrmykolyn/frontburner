@@ -74,31 +74,30 @@ const outputParser = new OutputParser();
 /* DECLARE FUNCTIONS */
 /* -------------------------------------------------- */
 function init() {
-	let fileName = null;
-	let filePath = null;
+	let target = null;
 	let filePaths = [];
 
 	return new Promise( function( resolve ) {
-		fileName = cli.input[ 0 ];
-
-		if ( !fileName ) {
+		if ( !cli.input[ 0 ] ) {
 			throw new Error( 'Whoops! Frontburner requires at least one argument.' );
 		}
 
-		if ( fileName === '.' ) {
-			recursive( process.cwd(), inputParser.getSettings().excludes, function( err, files ) {
-				filePaths = files.map( function( filePath ) {
-					return [ filePath, fs.readFileSync( filePath, 'utf8' ) ];
+		// Prepend current working directory if input is not an absolute path.
+		target = ( cli.input[ 0 ].substring( 0, 1 ) !== '/' ) ? `${process.cwd()}/${cli.input[ 0 ]}` : cli.input[ 0 ];
+
+		// Handle cases where `target` is a folder.
+		if ( fs.lstatSync( target ).isDirectory() ) {
+			recursive( target, inputParser.getSettings().excludes, function( err, files ) {
+				filePaths = files.map( function( path ) {
+					return [ path, fs.readFileSync( path, 'utf8' ) ];
 				} );
 
 				resolve( filePaths );
 				return;
 			} );
+		// Handle cases where `target` is a file.
 		} else {
-			// Prepend current dir. if `fileName` is not an absolute path.
-			filePath = ( fileName.substring( 0, 1 ) === '/' ) ? fileName : `${process.cwd()}/${fileName}`;
-
-			filePaths.push( [ filePath, fs.readFileSync( filePath, 'utf8' ) ] );
+			filePaths.push( [ target, fs.readFileSync( target, 'utf8' ) ] );
 
 			resolve( filePaths );
 			return;
